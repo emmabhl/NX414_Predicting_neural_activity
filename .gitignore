@@ -1,2 +1,10 @@
 IT_data.h5
 __pycache__/utils.cpython-311.pyc
+layer1.csv
+layer2.csv
+layer3.csv
+layer4.csv
+conv1.csv
+avgpool.csv
+.DS_Store
+.vscode/settings.json
