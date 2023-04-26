@@ -7,10 +7,6 @@ import numpy as np
 from sklearn.linear_model import Ridge
 from sklearn.model_selection import cross_val_score
 
-
-
-
-
 def load_it_data(path_to_data):
     """ Load IT data
 
