@@ -4,6 +4,11 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import cross_val_score
+
+
+
 
 
 def load_it_data(path_to_data):
@@ -58,3 +63,52 @@ def visualize_img(stimulus,objects,stim_idx):
     plt.title(str(objects[stim_idx]))
     plt.show()
     return
+
+def best_alpha_Ridge(X, y, alphas):
+    """implement cross validation to find the best alpha for Ridge regression
+
+    Args:
+        X (ndarray): input data
+        y (ndarray): output data, neuronal activity
+        alphas (list of double): list of alpha to test
+
+    Returns:
+        tuple (double, ndarray): best alpha and all the scores for each alpha
+    """
+    scores = []
+    for alpha in alphas:
+        model = Ridge(alpha=alpha)
+        cv_scores = cross_val_score(model, X, y, cv=5)
+        scores.append(np.mean(cv_scores))
+    return alphas[np.argmax(scores)], scores
+
+def plot_RidgeCV(alphas, scores):
+    """plot the scores for each alpha
+
+    Args:
+        alphas (list of double): list of alpha that were tested
+        scores (list of double): list of scores for each alpha
+    """
+    plt.figure(figsize=(3,2))
+    plt.plot(alphas, scores)
+    plt.xlabel('alpha')
+    plt.ylabel('r2 score')
+    plt.show()
+    
+def RidgeCV(X, y, alphas):
+    """find the best alpha for Ridge regression and plot the scores for each alpha, then fit the model with the best alpha
+
+    Args:
+        X (ndarray): input data
+        y (ndarray): output data, neuronal activity
+        alphas (list of double): list of alpha to test
+
+    Returns:
+        tuple (model, double): the ridge model fitted with the best alpha and the corresponding alpha
+    """
+    best_alpha, scores = best_alpha_Ridge(X, y, alphas)
+    plot_RidgeCV(alphas, scores)
+    print('The best alpha is', best_alpha)
+    model = Ridge(alpha=best_alpha)
+    model.fit(X, y)
+    return model, best_alpha
